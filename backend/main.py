@@ -1,3 +1,4 @@
+import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
@@ -5,6 +6,10 @@ from firebase_admin import credentials
 from google.cloud import firestore
 from dotenv import load_dotenv
 from routers.chat import router as chat
+import os
+from authlib.integrations.starlette_client import OAuth
+from starlette.config import Config
+from starlette.middleware.sessions import SessionMiddleware
 load_dotenv(dotenv_path=".env")
 
 # ...existing code...
@@ -13,8 +18,29 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 # Initialize Firebase
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+creds_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+if creds_json is None:
+    raise RuntimeError("Missing GOOGLE_APPLICATION_CREDENTIALS in environment")
+
+credentials = credentials.Certificate("google_credentials.json")
+firebase_admin.initialize_app(credentials)
+
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
+
+# Configure OAuth
+config = Config('.env')
+oauth = OAuth(config)
+oauth.register(
+    name='google',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    access_token_url='https://oauth2.googleapis.com/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid email profile'},
+)
 
 app = FastAPI()
 
