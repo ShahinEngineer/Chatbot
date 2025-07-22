@@ -1,0 +1,5 @@
+FastAPI
+firebase-admin
+openai
+uvicorn
+python-dotenv
