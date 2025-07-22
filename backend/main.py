@@ -12,8 +12,6 @@ from starlette.middleware.sessions import SessionMiddleware
 
 load_dotenv(dotenv_path=".env")
 
-# ...existing code...
-
 app = FastAPI()
 
 # Initialize Firebase
