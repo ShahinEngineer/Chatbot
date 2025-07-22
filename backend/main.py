@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
-from firebase_admin import credentials, auth
-# filepath: /Users/mohammadshahin/Chatbot/backend/main.py
-import os
+from firebase_admin import credentials
+from google.cloud import firestore
 from dotenv import load_dotenv
-
+from routers.chat import router as chat
 load_dotenv(dotenv_path=".env")
 
 # ...existing code...
@@ -19,6 +18,7 @@ firebase_admin.initialize_app(cred)
 
 app = FastAPI()
 
+
 # CORS for frontend dev
 app.add_middleware(
     CORSMiddleware,
@@ -28,8 +28,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Routes
-# app.include_router(chat_router)
+app.include_router(chat, prefix="/chat")
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
 @app.get("/")
 def read_root():
