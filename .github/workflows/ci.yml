@@ -1,0 +1,55 @@
+name: Frontend & Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: 🐍 Backend Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: ✅ Run flake8
+        run: |
+          cd backend
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+
+  # frontend:
+  #   name: ⚛️ Frontend Lint
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: 📥 Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: 🟩 Set up Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18'
+
+  #     - name: 📦 Install frontend dependencies
+  #       run: |
+  #         cd frontend
+  #         npm install
+
+  #     - name: ✅ Run frontend linter (ESLint)
+  #       run: |
+  #         cd frontend
+  #         npm run lint

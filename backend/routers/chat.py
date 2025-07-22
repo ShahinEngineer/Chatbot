@@ -1,7 +1,7 @@
 from fastapi import APIRouter
-from services.openai_service import get_openai_response
-from services.firestore_service import save_message, get_history
 from models.message_model import ChatRequest
+from services.firestore_service import get_history, save_message
+from services.openai_service import get_openai_response
 
 router = APIRouter()
 
@@ -19,7 +19,4 @@ async def chat(data: ChatRequest):
     save_message(session_id, "user", data.message)
     save_message(session_id, "assistant", ai_response)
 
-    return {
-        "session_id": session_id,
-        "response": ai_response
-    }
+    return {"session_id": session_id, "response": ai_response}

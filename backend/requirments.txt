@@ -4,3 +4,6 @@ openai
 uvicorn
 python-dotenv
 itsdangerous
+flake8
+isort
+ruff
