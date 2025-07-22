@@ -6,9 +6,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from firebase_admin import credentials
-from routers.chat import router as chat
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
+
+from routers.chat import router as chat
 
 load_dotenv(dotenv_path=".env")
 
