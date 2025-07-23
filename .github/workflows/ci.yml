@@ -31,25 +31,33 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
 
-  # frontend:
-  #   name: ⚛️ Frontend Lint
-  #   runs-on: ubuntu-latest
+  frontend:
+    name: ⚛️ Frontend Lint
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: 📥 Checkout code
-  #       uses: actions/checkout@v3
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: 🟩 Set up Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18'
+      - name: 🟩 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-  #     - name: 📦 Install frontend dependencies
-  #       run: |
-  #         cd frontend
-  #         npm install
+      - name: ⚡ Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  #     - name: ✅ Run frontend linter (ESLint)
-  #       run: |
-  #         cd frontend
-  #         npm run lint
+      - name: 📦 Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: ✅ Run frontend linter (ESLint)
+        run: |
+          cd frontend
+          npm run lint
