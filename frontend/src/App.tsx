@@ -1,12 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import "./App.css";
+import type { MESSAGE } from "./types";
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<MESSAGE[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const eventSourceRef = useRef(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
   const sessionId = "test_session";
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  console.log("API URL:", apiUrl);
 
   const handleSend = async () => {
     const userInput = input.trim();
@@ -20,7 +24,7 @@ function App() {
     setMessages((prev) => [...prev, { text: "", sender: "bot" }]);
 
     try {
-      await fetch("http://127.0.0.1:8000/chat", {
+      await fetch(`${apiUrl}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +36,7 @@ function App() {
         eventSourceRef.current.close();
       }
 
-      const es = new EventSource(`http://127.0.0.1:8000/chat/sse?session_id=${sessionId}`);
+      const es = new EventSource(`${apiUrl}/chat/sse?session_id=${sessionId}`);
       eventSourceRef.current = es;
 
       es.onmessage = (event) => {
@@ -62,7 +66,7 @@ function App() {
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { text: "Error contacting server.", sender: "bot" },
+        { text: `Error contacting server.${(err as Error).message}`, sender: "bot" },
       ]);
       setLoading(false);
     }
