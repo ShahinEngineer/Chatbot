@@ -23,7 +23,6 @@ async def get_openai_response(user_message: str) -> str:
 async def event_generator(session_id: str):
     history = get_history(session_id)
 
-    print(f"Generating events for session: {history}")
     # Construct OpenAI-compatible message list
     messages = [{"role": msg["role"], "content": msg["message"]} for msg in history]
 
