@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import "./App.css";
 import type { MESSAGE } from "./types";
+import React from "react";
 
 function App() {
   const [messages, setMessages] = useState<MESSAGE[]>([]);
