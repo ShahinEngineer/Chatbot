@@ -9,9 +9,9 @@
     "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
     "lint:fix": "eslint . --ext .js,.ts,.jsx,.tsx --fix",
     "preview": "vite preview"
-
   },
   "dependencies": {
+    "fdir": "^6.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
